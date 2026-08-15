@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Free Fire Strike Zone — fan-style website dengan gambar karakter resmi Garena, roster, modes, loadout, match stats dan efek battle royale.">
+<meta name="theme-color" content="#08090b">
+<title>Free Fire Strike Zone — Fan UI</title>
+<style>
+:root{
+ --bg:#07080a;--bg2:#0d0f12;--panel:#12151a;--panel2:#181c22;--line:#2a3039;
+ --orange:#ff8b2c;--yellow:#ffd04f;--red:#ff4f4f;--cyan:#4ee6ff;--white:#f8fafc;--muted:#939ba7;
+ --green:#6dffaf;--shadow:0 28px 90px rgba(0,0,0,.45)
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{
+ margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--white);line-height:1.65;overflow-x:hidden;
+ background:
+ radial-gradient(circle at 14% 6%,rgba(255,139,44,.14),transparent 24%),
+ radial-gradient(circle at 86% 10%,rgba(255,79,79,.1),transparent 28%),
+ linear-gradient(180deg,#07080a,#0a0c0f 54%,#08090b)
+}
+a{text-decoration:none;color:inherit}button,input{font:inherit}button{cursor:pointer}
+.container{width:min(1220px,calc(100% - 36px));margin:auto}.section{padding:90px 0}
+h1,h2,h3,p{margin-top:0}h1,h2,h3{font-family:Georgia,"Times New Roman",serif}
+h1{font-size:clamp(56px,8vw,98px);line-height:.96;letter-spacing:-.045em;margin-bottom:22px}
+h2{font-size:clamp(38px,5vw,62px);line-height:1.03;letter-spacing:-.03em}
+p{color:var(--muted)}
+.eyebrow{display:inline-block;color:var(--orange);font-size:9px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;margin-bottom:14px}
+.progress{position:fixed;left:0;top:0;width:0;height:3px;background:linear-gradient(90deg,var(--yellow),var(--orange),var(--red));z-index:180;box-shadow:0 0 20px var(--orange)}
+.scan{position:fixed;inset:0;pointer-events:none;z-index:2;opacity:.035;background:repeating-linear-gradient(180deg,transparent 0 3px,#fff 4px)}
+.noise{position:fixed;inset:0;pointer-events:none;opacity:.03;background-image:radial-gradient(#fff 1px,transparent 1px);background-size:7px 7px}
+.flame{
+ position:fixed;width:420px;height:420px;border-radius:50%;filter:blur(140px);
+ background:#ff5a25;opacity:.10;right:-180px;top:70px;pointer-events:none
+}
+
+.topbar{background:#020202;border-bottom:1px solid #1b1e22;font-size:9px;text-transform:uppercase;letter-spacing:.12em}.topbar .container{min-height:34px;display:flex;align-items:center;justify-content:space-between}.topbar span:last-child{color:var(--yellow)}
+header{position:sticky;top:0;z-index:90;background:rgba(7,8,10,.88);backdrop-filter:blur(18px);border-bottom:1px solid rgba(42,48,57,.85)}
+.nav{min-height:80px;display:flex;align-items:center;gap:28px}.brand{display:flex;align-items:center;gap:11px;min-width:max-content}
+.logo{width:49px;height:49px;clip-path:polygon(12% 0,100% 0,88% 100%,0 100%);background:linear-gradient(145deg,#ff9a31,#ff4f36);display:grid;place-items:center;font-weight:900;font-style:italic;color:#141414;box-shadow:0 0 28px rgba(255,112,45,.2)}
+.brand strong{display:block;font-family:Georgia,serif;font-size:21px;line-height:1}.brand small{display:block;margin-top:4px;color:#777f89;font-size:8px;text-transform:uppercase;letter-spacing:.17em}
+nav{display:flex;justify-content:center;gap:22px;flex:1}nav a{font-size:10px;font-weight:900;color:#a4abb5;text-transform:uppercase;letter-spacing:.09em}nav a:hover{color:var(--orange)}
+.nav-chip{border:1px solid var(--line);background:#111418;color:white;border-radius:999px;padding:10px 14px;font-size:9px;font-weight:900;text-transform:uppercase}.menu{display:none;margin-left:auto;border:0;background:transparent;color:white;font-size:26px}
+
+.hero{position:relative;min-height:790px;display:flex;align-items:center;overflow:hidden}
+.hero:after{content:"";position:absolute;left:0;right:0;bottom:0;height:160px;background:linear-gradient(transparent,#07080a)}
+.hero-grid{position:relative;z-index:4;display:grid;grid-template-columns:.97fr 1.03fr;gap:50px;align-items:center}
+.hero h1 em{font-style:normal;background:linear-gradient(90deg,var(--yellow),var(--orange),#ff614b);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-copy>p{font-size:18px;max-width:650px}.hero-actions{display:flex;gap:11px;flex-wrap:wrap;margin:28px 0}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:49px;padding:0 21px;border-radius:999px;border:1px solid transparent;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;transition:.22s}
+.btn:hover{transform:translateY(-3px)}.btn-main{background:linear-gradient(135deg,var(--yellow),var(--orange));color:#17120d;box-shadow:0 14px 34px rgba(255,139,44,.2)}.btn-dark{background:#111418;border-color:#343a43;color:white}
+.hero-stats{display:flex;gap:27px;flex-wrap:wrap;margin-top:31px}.hero-stats strong{display:block;font-size:22px;color:var(--yellow)}.hero-stats span{font-size:9px;color:#7c858f;text-transform:uppercase;letter-spacing:.1em}
+
+.hero-visual{position:relative;height:650px}
+.hero-bg{position:absolute;inset:35px 0 65px;border-radius:36px;overflow:hidden;background:linear-gradient(145deg,#16191f,#0b0d10);border:1px solid #343a43;box-shadow:var(--shadow)}
+.hero-bg:before{
+ content:"";position:absolute;inset:0;
+ background:
+ linear-gradient(115deg,rgba(255,139,44,.13),transparent 38%),
+ radial-gradient(circle at 74% 30%,rgba(255,79,79,.16),transparent 28%),
+ linear-gradient(180deg,#202329,#090a0c)
+}
+.hero-bg:after{content:"";position:absolute;left:0;right:0;bottom:0;height:35%;background:linear-gradient(transparent,#09090a)}
+.hero-char{position:absolute;bottom:58px;filter:drop-shadow(0 28px 26px rgba(0,0,0,.6));object-fit:contain;z-index:4}
+.hero-char.main{height:570px;right:40px}
+.hero-char.side{height:430px;left:10px;bottom:70px;opacity:.78;transform:scaleX(-1)}
+.fire-line{position:absolute;left:50px;right:45px;bottom:88px;height:4px;background:linear-gradient(90deg,transparent,var(--orange),var(--yellow),transparent);box-shadow:0 0 24px var(--orange);z-index:5;animation:firepulse 1.8s ease-in-out infinite}@keyframes firepulse{50%{opacity:.45}}
+.hero-label{position:absolute;right:20px;top:80px;z-index:6;text-align:right}.hero-label strong{display:block;font:48px Georgia;color:rgba(255,255,255,.14);letter-spacing:.08em}.hero-label span{font-size:9px;text-transform:uppercase;letter-spacing:.16em;color:var(--orange)}
+.float-card{position:absolute;z-index:7;padding:12px 14px;border-radius:14px;background:rgba(15,17,20,.82);border:1px solid #363c45;backdrop-filter:blur(11px);box-shadow:0 14px 30px rgba(0,0,0,.3)}.float-card.f1{left:0;top:105px}.float-card.f2{right:0;bottom:125px}.float-card strong{display:block;color:var(--yellow);font-size:17px}.float-card span{font-size:8px;color:#8e969f;text-transform:uppercase;letter-spacing:.1em}
+
+.mode-strip{padding:22px 0;background:#0b0d10;border-block:1px solid var(--line)}.mode-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}.mode-grid article{display:flex;align-items:center;gap:10px}.mode-icon{width:45px;height:45px;border-radius:13px;background:#14171b;border:1px solid #303640;display:grid;place-items:center;font-size:20px}.mode-grid strong{display:block;font-size:11px}.mode-grid p{font-size:9px;margin:2px 0 0}
+
+.characters{background:#090a0c}.section-head{display:flex;justify-content:space-between;gap:35px;align-items:end;margin-bottom:38px}.section-head>div{max-width:760px}.section-head>p{max-width:420px;margin-bottom:6px}
+.toolbar{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:26px}.search{display:flex;gap:9px;align-items:center;max-width:400px;flex:1;background:#12151a;border:1px solid var(--line);border-radius:14px;padding:0 13px}.search input{width:100%;min-height:46px;border:0;outline:0;background:transparent;color:white}
+.char-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:19px}.char-card{background:linear-gradient(180deg,#14171b,#0d0f12);border:1px solid var(--line);border-radius:22px;overflow:hidden;transition:.24s}.char-card:hover{transform:translateY(-7px);box-shadow:var(--shadow);border-color:#4a515b}
+.char-img-wrap{height:300px;position:relative;display:flex;justify-content:center;align-items:flex-end;overflow:hidden;background:radial-gradient(circle at 50% 42%,color-mix(in srgb,var(--accent) 20%,transparent),transparent 45%),linear-gradient(#171a1f,#0e1013)}
+.char-img-wrap:after{content:"";position:absolute;left:0;right:0;bottom:0;height:34%;background:linear-gradient(transparent,#111419)}
+.char-img{height:290px;max-width:95%;object-fit:contain;position:relative;z-index:2;filter:drop-shadow(0 18px 18px rgba(0,0,0,.45));transition:.4s}.char-card:hover .char-img{transform:scale(1.06) translateY(-4px)}
+.role{position:absolute;left:12px;top:12px;padding:7px 10px;border-radius:999px;background:rgba(5,6,8,.8);border:1px solid var(--accent);color:var(--accent);font-size:8px;font-weight:900;z-index:4}
+.char-body{padding:16px}.char-meta{color:var(--accent);font-size:8px;text-transform:uppercase;font-weight:900;letter-spacing:.08em}.char-card h3{font-size:25px;margin:6px 0 3px}.char-card p{font-size:10px;min-height:48px}.char-btn{width:100%;margin-top:11px;border:0;border-radius:999px;padding:10px;background:var(--accent);color:#071016;font-size:8px;font-weight:900;text-transform:uppercase}
+
+.loadout{background:linear-gradient(135deg,#111318,#191b20)}.loadout-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}.load-card{border:1px solid #333941;border-radius:23px;background:#0c0e11;padding:25px;position:relative;overflow:hidden}.load-card:before{content:"";position:absolute;width:220px;height:220px;border-radius:50%;background:var(--accent);opacity:.06;right:-90px;top:-90px}.weapon-art{height:180px;display:grid;place-items:center;font-size:95px;filter:drop-shadow(0 16px 18px rgba(0,0,0,.3))}.load-card h3{font-size:28px;margin:6px 0}.load-card p{font-size:10px}.weapon-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.weapon-stats div{background:#14171b;border:1px solid #2d333b;border-radius:11px;padding:10px}.weapon-stats small,.weapon-stats strong{display:block}.weapon-stats small{font-size:7px;color:#858e98;text-transform:uppercase}.weapon-stats strong{font-size:11px}
+
+.modes{background:#08090b}.mode-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.mode-card{min-height:310px;border-radius:23px;border:1px solid var(--line);position:relative;overflow:hidden;padding:24px;display:flex;align-items:flex-end;transition:.24s;background:var(--bgcard)}.mode-card:hover{transform:translateY(-5px);box-shadow:var(--shadow)}.mode-card:before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 20%,rgba(0,0,0,.7) 100%)}.mode-card:after{content:attr(data-icon);position:absolute;right:18px;top:20px;font-size:105px;opacity:.22}.mode-content{position:relative;z-index:2}.mode-content h3{font-size:29px;margin-bottom:5px}.mode-content p{font-size:10px;max-width:260px;color:#bec4ca}.mode-content span{font-size:8px;color:var(--yellow);text-transform:uppercase;letter-spacing:.1em}
+
+.stats-section{background:#101217}.stats-layout{display:grid;grid-template-columns:.9fr 1.1fr;gap:22px}.profile{background:#14171b;border:1px solid var(--line);border-radius:22px;padding:23px}.profile-head{display:flex;gap:14px;align-items:center}.avatar{width:75px;height:75px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#ff9433,#c53c2b);font:27px Georgia;border:2px solid var(--yellow)}.profile h3{font-size:25px;margin:0}.profile p{font-size:9px;margin:3px 0 0}.profile-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:17px}.ps{background:#0d0f12;border:1px solid #292f36;border-radius:11px;padding:10px}.ps small,.ps strong{display:block}.ps small{font-size:7px;color:#828b95;text-transform:uppercase}.ps strong{font-size:14px;margin-top:2px}
+.history{background:#14171b;border:1px solid var(--line);border-radius:22px;overflow:hidden}.history-head,.history-row{display:grid;grid-template-columns:90px 1.2fr 1fr 90px;gap:10px;align-items:center;padding:14px 16px}.history-head{font-size:8px;text-transform:uppercase;color:#757e89;border-bottom:1px solid var(--line)}.history-row{border-bottom:1px solid #242a31}.history-row:last-child{border:0}.history-row:hover{background:#191d22}.result.win{color:var(--green)}.result.lose{color:var(--red)}.history-row strong{font-size:10px}.history-row small{display:block;color:#7f8892;font-size:8px}.kda{font:16px Georgia;color:var(--yellow)}
+
+.cta{background:linear-gradient(135deg,#481c16,#742b1d 45%,#332017);position:relative;overflow:hidden}.cta:before{content:"";position:absolute;width:450px;height:450px;border:80px solid rgba(255,255,255,.035);border-radius:50%;right:-170px;top:-160px}.cta-grid{position:relative;display:grid;grid-template-columns:1fr .9fr;gap:42px;align-items:center}.cta p{color:#dcc0b3}.squad-card{background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.14);border-radius:22px;padding:24px}.squad-card input{width:100%;padding:12px;border-radius:11px;border:1px solid #7c4536;background:rgba(0,0,0,.25);color:white;margin-bottom:9px}.squad-card .btn{width:100%}
+
+footer{background:#020203;border-top:1px solid #1a1d21;padding:50px 0 22px}.footer-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:34px}.footer-grid p{font-size:10px;max-width:420px}.footer-grid h4{font-size:9px;color:var(--orange);text-transform:uppercase;letter-spacing:.13em}.footer-grid a{display:block;color:#818994;font-size:10px;margin:8px 0}.footer-bottom{border-top:1px solid #191c20;margin-top:30px;padding-top:16px;display:flex;justify-content:space-between;color:#545c65;font-size:9px}
+
+.overlay{position:fixed;inset:0;background:rgba(1,2,3,.84);z-index:120;opacity:0;visibility:hidden;transition:.25s}.overlay.show{opacity:1;visibility:visible}
+.modal{position:fixed;left:50%;top:50%;transform:translate(-50%,-45%) scale(.97);width:min(880px,calc(100% - 28px));max-height:92vh;overflow:auto;background:#101317;border:1px solid #3a414a;border-radius:24px;z-index:125;opacity:0;visibility:hidden;transition:.25s}.modal.show{opacity:1;visibility:visible;transform:translate(-50%,-50%) scale(1)}
+.modal-grid{display:grid;grid-template-columns:.85fr 1.15fr}.modal-image{min-height:520px;display:flex;align-items:flex-end;justify-content:center;background:radial-gradient(circle at center,color-mix(in srgb,var(--modal-color) 22%,transparent),transparent 45%),#0b0d10;overflow:hidden}.modal-image img{height:500px;max-width:100%;object-fit:contain;filter:drop-shadow(0 20px 24px rgba(0,0,0,.5))}
+.modal-content{padding:31px}.modal-content h2{font-size:43px}.modal-close{position:absolute;right:14px;top:14px;width:40px;height:40px;border-radius:50%;border:1px solid #414852;background:#12151a;color:white;z-index:4}.modal-info{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:16px}.info{background:#0b0d10;border:1px solid #282e35;border-radius:11px;padding:10px}.info small,.info strong{display:block}.info small{font-size:7px;color:#7f8993;text-transform:uppercase}.info strong{font-size:11px;margin-top:2px}
+.toast{position:fixed;left:50%;bottom:23px;transform:translate(-50%,130%);opacity:0;background:var(--yellow);color:#1b160f;padding:11px 16px;border-radius:999px;font-size:10px;font-weight:900;z-index:160;transition:.25s}.toast.show{transform:translate(-50%,0);opacity:1}
+.reveal{opacity:0;transform:translateY(28px);transition:.7s}.reveal.visible{opacity:1;transform:none}
+
+@media(max-width:1050px){.char-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:900px){.menu{display:block}nav{display:none;position:absolute;left:18px;right:18px;top:80px;background:#101317;border:1px solid var(--line);padding:14px;border-radius:16px;flex-direction:column}nav.open{display:flex}.nav-chip{display:none}.hero{min-height:auto;padding:90px 0}.hero-grid,.loadout-grid,.stats-layout,.cta-grid{grid-template-columns:1fr}.hero-visual{max-width:680px;margin:auto;width:100%}.mode-grid{grid-template-columns:repeat(2,1fr)}.mode-cards{grid-template-columns:1fr}.modal-grid{grid-template-columns:1fr}.modal-image{min-height:380px}.footer-grid{grid-template-columns:1.5fr 1fr}}
+@media(max-width:620px){.container{width:min(100% - 24px,1220px)}.section{padding:64px 0}.topbar .container{justify-content:center}.topbar span:last-child{display:none}h1{font-size:47px}h2{font-size:36px}.hero-actions .btn{width:100%}.hero-visual{height:520px}.hero-char.main{height:450px;right:-15px}.hero-char.side{height:330px;left:-40px}.hero-label{display:none}.mode-grid,.char-grid{grid-template-columns:1fr}.section-head{display:block}.modal-info{grid-template-columns:1fr}.history-head,.history-row{grid-template-columns:70px 1fr 80px}.history-head span:nth-child(4),.history-row span:nth-child(4){display:none}.footer-grid{grid-template-columns:1fr}.footer-bottom{flex-direction:column;gap:7px}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div><div class="scan"></div><div class="noise"></div><div class="flame"></div>
+
+<div class="topbar"><div class="container"><span>Free Fire fan-style interface · real official character imagery</span><span>Character images loaded from Garena official CDN</span></div></div>
+
+<header><div class="container nav">
+<a class="brand" href="#home"><span class="logo">FF</span><span><strong>Strike Zone</strong><small>Free Fire Fan Interface</small></span></a>
+<button class="menu">☰</button>
+<nav><a href="#characters">Characters</a><a href="#loadout">Loadout</a><a href="#modes">Modes</a><a href="#stats">Stats</a><a href="#squad">Squad</a></nav>
+<button class="nav-chip" id="randomBtn">Random Character</button>
+</div></header>
+
+<main>
+<section class="hero" id="home"><div class="container hero-grid">
+<div class="hero-copy reveal">
+<span class="eyebrow">Battle royale survival hub</span>
+<h1>Drop in. Gear up. <em>Battle in style.</em></h1>
+<p>Website fan-style Free Fire dengan gambar karakter asli, roster interaktif, loadout, mode permainan, statistik match dan visual battle royale yang lebih agresif.</p>
+<div class="hero-actions"><a href="#characters" class="btn btn-main">Explore Characters</a><a href="#modes" class="btn btn-dark">View Game Modes</a></div>
+<div class="hero-stats"><div><strong>8 Characters</strong><span>Official character art</span></div><div><strong>3 Modes</strong><span>Battle Royale · CS · Ranked</span></div><div><strong>1 Squad</strong><span>Build your lineup</span></div></div>
+</div>
+<div class="hero-visual reveal">
+<div class="hero-bg"></div>
+<img class="hero-char side" src="https://dl.dir.freefiremobile.com/common/web_event/official2.ff.garena.all/202210/7cf52d189d78bc8f87714bbb433f2e63.png" alt="Chrono Free Fire">
+<img class="hero-char main" src="https://dl.dir.freefiremobile.com/common/web_event/official2.ff.garena.all/202210/c62e709e3ad8387f5484bb12e1cc81a9.png" alt="Alok Free Fire">
+<div class="hero-label"><strong>BOOYAH</strong><span>Survive · Rotate · Dominate</span></div>
+<div class="fire-line"></div>
+<div class="float-card f1"><strong>ALOK</strong><span>Support / Sustain</span></div>
+<div class="float-card f2"><strong>CHRONO</strong><span>Defense Specialist</span></div>
+</div>
+</div></section>
+
+<section class="mode-strip"><div class="container mode-grid">
+<article><span class="mode-icon">🪂</span><div><strong>Battle Royale</strong><p>Drop, loot, survive.</p></div></article>
+<article><span class="mode-icon">⚔️</span><div><strong>Clash Squad</strong><p>Fast team combat.</p></div></article>
+<article><span class="mode-icon">🏆</span><div><strong>Ranked</strong><p>Push tier & stats.</p></div></article>
+<article><span class="mode-icon">🔥</span><div><strong>Booyah</strong><p>Last squad standing.</p></div></article>
+</div></section>
+
+<section class="section characters" id="characters"><div class="container">
+<div class="section-head reveal"><div><span class="eyebrow">Character Roster</span><h2>Karakter asli dengan style showcase yang lebih nyata.</h2></div><p>Gambar karakter dimuat langsung dari aset resmi Garena. Deskripsi ringkas di halaman ini dibuat untuk layout demo.</p></div>
+<div class="toolbar reveal"><div class="search">⌕ <input id="searchInput" placeholder="Cari Alok, Chrono, Koda, mobility..."></div></div>
+<div class="char-grid" id="charGrid"></div>
+</div></section>
+
+<section class="section loadout" id="loadout"><div class="container">
+<div class="section-head reveal"><div><span class="eyebrow">Loadout Lab</span><h2>Pilih gaya bertarung kamu.</h2></div></div>
+<div class="loadout-grid">
+<article class="load-card reveal" style="--accent:#ff8b2c"><span class="eyebrow">Assault Setup</span><div class="weapon-art">🔫</div><h3>Rusher Loadout</h3><p>Setup demo untuk pemain yang suka entry cepat dan duel jarak dekat.</p><div class="weapon-stats"><div><small>Range</small><strong>Close</strong></div><div><small>Style</small><strong>Aggressive</strong></div><div><small>Utility</small><strong>Gloo Wall</strong></div></div></article>
+<article class="load-card reveal" style="--accent:#4ee6ff"><span class="eyebrow">Precision Setup</span><div class="weapon-art">🎯</div><h3>Long Range Loadout</h3><p>Setup demo untuk pemain yang menjaga angle dan memberikan pressure dari jarak jauh.</p><div class="weapon-stats"><div><small>Range</small><strong>Long</strong></div><div><small>Style</small><strong>Tactical</strong></div><div><small>Utility</small><strong>Scan</strong></div></div></article>
+</div>
+</div></section>
+
+<section class="section modes" id="modes"><div class="container">
+<div class="section-head reveal"><div><span class="eyebrow">Battle Modes</span><h2>Tiga cara masuk ke medan tempur.</h2></div></div>
+<div class="mode-cards">
+<article class="mode-card reveal" data-icon="🪂" style="--bgcard:linear-gradient(145deg,#3b2614,#16110d)"><div class="mode-content"><span>Survival Mode</span><h3>Battle Royale</h3><p>Loot cepat, jaga rotasi, kuasai zona dan jadi survivor terakhir.</p></div></article>
+<article class="mode-card reveal" data-icon="⚔️" style="--bgcard:linear-gradient(145deg,#30191f,#140d10)"><div class="mode-content"><span>4v4 Combat</span><h3>Clash Squad</h3><p>Round singkat dengan economy dan team fight intens.</p></div></article>
+<article class="mode-card reveal" data-icon="🏆" style="--bgcard:linear-gradient(145deg,#202845,#0c101b)"><div class="mode-content"><span>Competitive</span><h3>Ranked Push</h3><p>Kejar placement, eliminasi dan konsistensi untuk naik tier.</p></div></article>
+</div>
+</div></section>
+
+<section class="section stats-section" id="stats"><div class="container">
+<div class="section-head reveal"><div><span class="eyebrow">Player Center</span><h2>Statistik pertandingan terakhir.</h2></div><p>Statistik di bawah adalah data demo untuk tampilan website.</p></div>
+<div class="stats-layout">
+<div class="profile reveal"><div class="profile-head"><div class="avatar">FF</div><div><span class="eyebrow">Player Profile</span><h3>BooyahRider</h3><p>Heroic · Southeast Asia</p></div></div><div class="profile-stats"><div class="ps"><small>Matches</small><strong>312</strong></div><div class="ps"><small>Win Rate</small><strong>31.7%</strong></div><div class="ps"><small>K/D</small><strong>4.26</strong></div><div class="ps"><small>Headshot</small><strong>42%</strong></div></div></div>
+<div class="history reveal"><div class="history-head"><span>Result</span><span>Mode</span><span>K / D</span><span>Placement</span></div><div class="history-row"><span class="result win">BOOYAH</span><div><strong>Battle Royale</strong><small>Bermuda</small></div><span class="kda">8 / 2</span><span>#1</span></div><div class="history-row"><span class="result win">WIN</span><div><strong>Clash Squad</strong><small>Ranked</small></div><span class="kda">11 / 5</span><span>4–2</span></div><div class="history-row"><span class="result lose">DEFEAT</span><div><strong>Battle Royale</strong><small>Solara</small></div><span class="kda">4 / 3</span><span>#8</span></div><div class="history-row"><span class="result win">BOOYAH</span><div><strong>Battle Royale</strong><small>Purgatory</small></div><span class="kda">9 / 1</span><span>#1</span></div></div>
+</div>
+</div></section>
+
+<section class="section cta" id="squad"><div class="container cta-grid">
+<div class="reveal"><span class="eyebrow">Build a Squad</span><h2>Siapkan squad sebelum drop.</h2><p>Form demo untuk membuat squad dan masuk ke lobby battle royale.</p></div>
+<div class="squad-card reveal"><input id="squadName" placeholder="Nama squad"><input id="captainName" placeholder="Nama captain"><input id="regionName" placeholder="Region"><button class="btn btn-main" id="createSquad">Create Squad Demo</button></div>
+</div></section>
+</main>
+
+<footer><div class="container footer-grid">
+<div><a class="brand" href="#home"><span class="logo">FF</span><span><strong>Strike Zone</strong><small>Free Fire Fan Interface</small></span></a><p>Konsep fan-style website Free Fire dengan gambar karakter resmi yang dimuat dari CDN Garena, roster, loadout, modes dan stats.</p><p>Free Fire, nama karakter, dan seluruh aset visual terkait merupakan milik Garena/pemegang hak masing-masing. Website ini hanya konsep UI independen.</p></div>
+<div><h4>Explore</h4><a href="#characters">Characters</a><a href="#loadout">Loadout</a><a href="#modes">Modes</a></div>
+<div><h4>Battle</h4><a href="#stats">Stats</a><a href="#squad">Squad</a><a href="#home">Back to Top</a></div>
+</div><div class="container footer-bottom"><span>© 2026 Strike Zone Fan UI.</span><span>Real character images load online from Garena CDN.</span></div></footer>
+
+<div class="overlay" id="overlay"></div>
+<div class="modal" id="modal"><button class="modal-close" id="modalClose">✕</button><div class="modal-grid"><div class="modal-image"><img id="modalImg" alt=""></div><div class="modal-content"><span class="eyebrow" id="modalRole"></span><h2 id="modalName"></h2><p id="modalDesc"></p><div class="modal-info" id="modalInfo"></div><button class="btn btn-main" id="chooseBtn" style="margin-top:17px">Choose Character</button></div></div></div>
+<div class="toast" id="toast">Character selected.</div>
+
+<script>
+const chars=[{"name": "Alok", "role": "Support / Sustain", "skill": "Drop the Beat", "accent": "#4ee6ff", "img": "https://dl.dir.freefiremobile.com/common/web_event/official2.ff.garena.all/202210/c62e709e3ad8387f5484bb12e1cc81a9.png", "desc": "DJ ikonik dengan aura support untuk membantu mobilitas dan sustain squad."}, {"name": "Chrono", "role": "Defense", "skill": "Time Turner", "accent": "#5f8cff", "img": "https://dl.dir.freefiremobile.com/common/web_event/official2.ff.garena.all/202210/7cf52d189d78bc8f87714bbb433f2e63.png", "desc": "Karakter futuristik dengan gaya bertahan dan visual sci-fi yang khas."}, {"name": "Kelly", "role": "Mobility", "skill": "Deadly Velocity", "accent": "#ffd05d", "img": "https://dl.dir.freefiremobile.com/common/web_event/official2.ff.garena.all/202311/a80ef2744fa83dc119cc09249d70444e.png", "desc": "Runner cepat untuk rotasi, flank, dan pergerakan agresif."}, {"name": "Tatsuya", "role": "Rusher", "skill": "Rebel Rush", "accent": "#ff705d", "img": "https://dl.dir.freefiremobile.com/common/web_event/official2.ff.garena.all/20229/e37e48adf72a2c014c2bfa8ed483f5b5.png", "desc": "Rusher lincah yang cocok untuk entry dan pertarungan jarak dekat."}, {"name": "Sonia", "role": "Clutch", "skill": "Nano Lifeshield", "accent": "#d787ff", "img": "https://dl.dir.freefiremobile.com/common/web_event/official2.ff.garena.all/20238/8f978bdbe46d3d2366b82713082d6683.png", "desc": "Pilihan clutch dengan gaya bertahan di momen kritikal."}, {"name": "Koda", "role": "Recon", "skill": "Aurora Vision", "accent": "#73e5c0", "img": "https://dl.dir.freefiremobile.com/common/web_event/official2.ff.garena.all/202412/b2f635a96ed787a8e540031402ea751b.png", "desc": "Recon specialist untuk membaca situasi dan mendapatkan informasi."}, {"name": "Rin", "role": "Gloo Breaker", "skill": "Gale of Kunai", "accent": "#ff88b6", "img": "https://dl.dir.freefiremobile.com/common/web_event/official2.ff.garena.all/20257/9aa96a782fab8633cbb57f9229e7a5e6.png", "desc": "Karakter stylish dengan fokus utility dan tekanan terhadap pertahanan lawan."}, {"name": "Morse", "role": "Stealth", "skill": "Stealth Bytes", "accent": "#8f78ff", "img": "https://dl.dir.freefiremobile.com/common/web_event/official2.ff.garena.all/20261/87b0db20d90350d22979b03d8b65a567.png", "desc": "Stealth specialist dengan nuansa cyber dan gameplay taktis."}];
+function render(){
+ const q=searchInput.value.toLowerCase();
+ const list=chars.filter(c=>(`${c.name} ${c.role} ${c.skill} ${c.desc}`.toLowerCase().includes(q)));
+ charGrid.innerHTML=list.map(c=>`<article class="char-card reveal" style="--accent:${c.accent}"><div class="char-img-wrap"><span class="role">${c.role}</span><img class="char-img" src="${c.img}" alt="${c.name} Free Fire" loading="lazy"></div><div class="char-body"><span class="char-meta">${c.skill}</span><h3>${c.name}</h3><p>${c.desc}</p><button class="char-btn" data-char="${c.name}">View Character</button></div></article>`).join("");
+ document.querySelectorAll("[data-char]").forEach(b=>b.onclick=()=>openChar(b.dataset.char));observe();
+}
+searchInput.oninput=render;
+
+const overlay=document.getElementById("overlay"),modal=document.getElementById("modal");
+let activeChar=null;
+function openChar(name){
+ const c=chars.find(x=>x.name===name);activeChar=c;
+ modal.style.setProperty("--modal-color",c.accent);modalImg.src=c.img;modalImg.alt=c.name+" Free Fire";modalRole.textContent=c.role;modalName.textContent=c.name;modalDesc.textContent=c.desc;
+ modalInfo.innerHTML=`<div class="info"><small>Role Style</small><strong>${c.role}</strong></div><div class="info"><small>Skill</small><strong>${c.skill}</strong></div>`;
+ overlay.classList.add("show");modal.classList.add("show");document.body.style.overflow="hidden";
+}
+function closeModal(){overlay.classList.remove("show");modal.classList.remove("show");document.body.style.overflow=""}
+modalClose.onclick=closeModal;overlay.onclick=closeModal;chooseBtn.onclick=()=>{if(activeChar){notify(`${activeChar.name} dipilih untuk squad.`);closeModal()}};
+randomBtn.onclick=()=>openChar(chars[Math.floor(Math.random()*chars.length)].name);
+
+createSquad.onclick=()=>{if(!squadName.value.trim()||!captainName.value.trim()){notify("Isi nama squad dan captain dahulu.");return}notify(`${squadName.value} berhasil dibuat sebagai demo.`);squadName.value="";captainName.value="";regionName.value=""};
+
+const toast=document.getElementById("toast");function notify(msg){toast.textContent=msg;toast.classList.add("show");clearTimeout(window.t);window.t=setTimeout(()=>toast.classList.remove("show"),1600)}
+const menu=document.querySelector(".menu"),nav=document.querySelector("nav");menu.onclick=()=>{nav.classList.toggle("open");menu.textContent=nav.classList.contains("open")?"✕":"☰"};document.querySelectorAll("nav a").forEach(a=>a.onclick=()=>{nav.classList.remove("open");menu.textContent="☰"});
+window.addEventListener("scroll",()=>{const d=document.documentElement;progress.style.width=d.scrollTop/(d.scrollHeight-d.clientHeight)*100+"%"});
+let observer;function observe(){observer=observer||new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("visible");observer.unobserve(e.target)}}),{threshold:.1});document.querySelectorAll(".reveal:not(.visible)").forEach(x=>observer.observe(x))}
+render();observe();
+</script>
+</body>
+</html>
